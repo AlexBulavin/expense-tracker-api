@@ -25,3 +25,4 @@ jobs:
       - name: Test with python manage.py
         run: |
           python manage.py test
+
