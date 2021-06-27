@@ -4,7 +4,7 @@ from unittest import TestCase
 # Create your tests here.
 # Предположм, что мы имеем для тестирования функцию, которая на вход получает два арнумента, а на выходе выдаёт их сумму
 def two_integers_sum(a, b):
-    return a+b
+    return a+b+10
 
 class TestSum(TestCase):
     def test_sum(self):
