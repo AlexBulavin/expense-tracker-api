@@ -9,4 +9,9 @@ class Expense(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
+    # После создания модели необходимо запустить команды python manage.py makemigrations
+    # И python manage.py migrate.
+    # Также запушить в Git изменения в файле/лах миграции папки migrations. Иначе тесты на GitHub не пройдут.
+
+
 
