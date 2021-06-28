@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,3 +132,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+#Для ускорения прохождения тестов делаем менее безопасный heasher
+TESTING = 'test' in sys.argv[1:]
+#sys.argv[0:] is manage.py,
+# sys.argv[1] is test
+# sys.argv[1:] are all the command arguments following 'test' (if any), including 'test'
+
+#Проверяем, запущен ли тест
+if TESTING:
+    #Если запущен, то заменяем password hasher на более быстрый MD5
+    PASSWORD_HASHES = ['django.contrib.auth.hashers.MD5PasswordHasher']

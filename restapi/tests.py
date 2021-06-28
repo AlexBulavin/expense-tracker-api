@@ -1,6 +1,7 @@
 from django.test import TestCase
 from restapi import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 # from django.db.models import Count
 
 #from unittest import TestCase
@@ -25,6 +26,12 @@ class TestModels(TestCase):
         self.assertEqual('music', inserted_expense.category)
 
 class TestViews(TestCase):
+    #Добавляем создание аутентифицированного запроса c credantials суперпользователя.
+    def setUp(self):
+        #Создаём тестового пользователя. Задаём ему тестовые параметры.
+        User.objects.create_user('testUser', '', '9874563210258963214785654')
+        self.client.login(username='testUser', password='9874563210258963214785654')
+
     def test_expense_create(self):
         # Создаём тестовые данные
         payload = {
@@ -122,3 +129,4 @@ class TestViews(TestCase):
         self.assertEqual(amazon_expense.merchant, json_res[0]['merchant'])
         self.assertEqual(amazon_expense.description, json_res[0]['description'])
         self.assertEqual(amazon_expense.category, json_res[0]['category'])
+
