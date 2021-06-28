@@ -72,3 +72,30 @@ class TestViews(TestCase):
         res = self.client.post(reverse('restapi:expense-list-create'), payload, format='json')
 
         self.assertEqual(400, res.status_code)
+
+    def test_expense_retrieve(self):
+        expense = models.Expense.objects.create(amount=300, merchant='George', description='loan', category='transfer')
+        res = self.client.get(reverse('restapi:expense-retrieve-delete', args=[expense.id]), format='json')
+
+        self.assertEqual(200, res.status_code)
+
+        json_res = res.json()
+
+        self.assertEqual(expense.id, json_res['id'])  # Проверяем, совпадают ли ID
+        self.assertEqual(expense.amount, json_res['amount'])
+        self.assertEqual(expense.merchant, json_res['merchant'])
+        self.assertEqual(expense.description, json_res['description'])
+        self.assertEqual(expense.category, json_res['category'])
+
+    def test_expense_delete(self):
+        # Создаём и вставляем с БД тестовые данные
+        expense = models.Expense.objects.create(amount=400, merchant='John', description='loan', category='transfer')
+        # Удаляем из БД те же самые данные, находя их по expense.id
+        res = self.client.delete(reverse('restapi:expense-retrieve-delete', args=[expense.id]), format='json')
+
+        #Первая проверка, роверяем возвращаемый код на равенство 204 (удаление)
+        self.assertEqual(204, res.status_code)
+
+        #Вторая проверка, проверяем, что запись с данными, которые мы создали и вставили больше не существует в БД
+        self.assertFalse(models.Expense.objects.filter(pk=expense.id).exists())
+
