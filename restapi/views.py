@@ -36,6 +36,7 @@ class ExpenseListCreate(ListCreateAPIView):
     #     return Response(serializer.data, status=201)
     serializer_class = serializers.Expense
     queryset = models.Expense.objects.all()
+    filterset_fields = ['category', 'merchant']
 
 class ExpenseRetrieveDelete(RetrieveDestroyAPIView):
     # def get(self, request, pk):

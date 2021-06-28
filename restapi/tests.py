@@ -99,3 +99,26 @@ class TestViews(TestCase):
         #Вторая проверка, проверяем, что запись с данными, которые мы создали и вставили больше не существует в БД
         self.assertFalse(models.Expense.objects.filter(pk=expense.id).exists())
 
+    def test_list_expense_filter_by_merchant(self):
+        #Тест на излечение из базы покупок от определенного продавца
+        amazon_expense = models.Expense.objects.create(amount=100, merchant='amazon', description='sunglasses', category='fashion')
+        ebay_expense = models.Expense.objects.create(amount=200, merchant='ebay', description='watch', category='fashion')
+
+        #Создаём url к Амазоновской покупке (покупкам)
+        url = '/api/expenses?merchant=amazon'
+        res = self.client.get(url, format='json')
+
+        #Проверяем статус код, есть ли ответ.
+        self.assertEqual(200, res.status_code)
+
+        json_res = res.json()
+
+        #Поскольку в листе только 1 покупка с Амазона, то длина листа должна быть равна 1. Проверяем.
+        self.assertEqual(len(json_res), 1)
+
+        #Проверяем под каким индексом запись про покупку в Амазоне
+        self.assertEqual(amazon_expense.id, json_res[0]['id'])
+        self.assertEqual(amazon_expense.amount, json_res[0]['amount'])
+        self.assertEqual(amazon_expense.merchant, json_res[0]['merchant'])
+        self.assertEqual(amazon_expense.description, json_res[0]['description'])
+        self.assertEqual(amazon_expense.category, json_res[0]['category'])
