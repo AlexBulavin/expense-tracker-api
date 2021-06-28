@@ -2,6 +2,9 @@ from django.test import TestCase
 from restapi import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from rest_framework_api_key.models import APIKey
+from rest_framework.test import APIClient
+
 # from django.db.models import Count
 
 #from unittest import TestCase
@@ -28,9 +31,17 @@ class TestModels(TestCase):
 class TestViews(TestCase):
     #Добавляем создание аутентифицированного запроса c credantials суперпользователя.
     def setUp(self):
+
+    #     Авторизация через тестового пользователя.
         #Создаём тестового пользователя. Задаём ему тестовые параметры.
-        User.objects.create_user('testUser', '', '9874563210258963214785654')
-        self.client.login(username='testUser', password='9874563210258963214785654')
+        # User.objects.create_user('testUser', '', '9874563210258963214785654')
+        # self.client.login(username='testUser', password='9874563210258963214785654')
+
+    #     Авторизация через APIKey
+        api_key, key = APIKey.objects.create_key(name="expense-service")
+        #Воссоздаём клиента
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Api-Key {key}")
 
     def test_expense_create(self):
         # Создаём тестовые данные
