@@ -2,3 +2,4 @@ django == 3.2.4
 djangorestframework == 3.12.4
 markdown == 3.3.4
 django-filter == 2.4.0
+djangorestframework-api-key == 2.0.0
